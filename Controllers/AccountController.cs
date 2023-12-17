@@ -34,10 +34,15 @@ namespace TaskAuthenticationAuthorization.Controllers
 
                 if (user == null)
                 {
-                    _userContext.Users.Add(new User { Email = model.Email, Password = model.Password });
-                    await _userContext.SaveChangesAsync();
+                    user = new User { Email = model.Email, Password = model.Password };
+                    Role userRole = await _userContext.Roles.FirstOrDefaultAsync(r => r.Name == "regular");
+                    if (userRole != null)
+                    {
+                        user.Role = userRole;
+                    }
 
-                    await Authenticate(model.Email);
+                    _userContext.Add(user);
+                    await Authenticate(user);
 
                     return RedirectToAction("Index", "Home");
                 }
@@ -49,18 +54,19 @@ namespace TaskAuthenticationAuthorization.Controllers
             return View(model);
         }
 
-        public async Task Authenticate(string userEmail)
+        public async Task Authenticate(User user)
         {
             //create one claim
             var claims = new List<Claim>
             {
-                new Claim(ClaimsIdentity.DefaultNameClaimType, userEmail)
+                new Claim(ClaimsIdentity.DefaultNameClaimType, user.Email),
+                new Claim(ClaimsIdentity.DefaultRoleClaimType, user.Role?.Name)
             };
 
             // create claim Identiti object
             ClaimsIdentity Id = new ClaimsIdentity(claims, "ApplicationCookies"
-                ,ClaimsIdentity.DefaultNameClaimType
-                ,ClaimsIdentity.DefaultRoleClaimType);
+                , ClaimsIdentity.DefaultNameClaimType
+                , ClaimsIdentity.DefaultRoleClaimType);
 
             //setting authenticational cookies
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(Id));
