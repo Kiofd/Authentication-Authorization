@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TaskAuthenticationAuthorization.Models
+namespace TaskAuthenticationAuthorization.Models.ViewModels
 {
     public class IndexViewModel
     {
