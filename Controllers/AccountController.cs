@@ -52,12 +52,6 @@ namespace TaskAuthenticationAuthorization.Controllers
                     Role userRole = await db.Role.FirstOrDefaultAsync(r => r.Id == user.RoleId);
                     user.Role = userRole;
 
-                    //Customer customer = await context.Customers.FirstOrDefaultAsync(c => c.Email.Equals(user.Email));
-                    //if (customer == null)
-                    //{
-                    //    context.Customers.Add(new Customer { Email = user.Email });
-                    //}
-
                     await Authentication(user);
 
                     return RedirectToAction("Index", "Home");
@@ -89,11 +83,6 @@ namespace TaskAuthenticationAuthorization.Controllers
                         user.RoleId = userRole.Id;
                     }
 
-                    //Customer customer = await context.Customers.FirstOrDefaultAsync(c => c.Email.Equals(user.Email));
-                    //if (customer == null)
-                    //{
-                    //    context.Customers.Add(new Customer {FirstName="First", Email = user.Email });
-                    //}
                     db.Users.Add(user);
 
                     await db.SaveChangesAsync();
@@ -134,6 +123,7 @@ namespace TaskAuthenticationAuthorization.Controllers
 
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(id));
         }
+
         [Authorize(Policy = "OnlyVIP")]
         public IActionResult MyDiscount()
         {

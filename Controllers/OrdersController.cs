@@ -25,11 +25,8 @@ namespace TaskAuthenticationAuthorization.Controllers
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-
             var shoppingContext = _context.Orders.Include(o => o.Customer).Include(o => o.SuperMarket);
             IEnumerable<Order> orders = new List<Order>();
-            //if (User.IsInRole("buyer"))
-            //    orders = await shoppingContext.ToListAsync();
 
             if (User.IsInRole("admin"))
             {
@@ -62,9 +59,7 @@ namespace TaskAuthenticationAuthorization.Controllers
                 }
 
             }
-                return View(orders);
-                //var shoppingContext = _context.Orders.Include(o => o.Customer).Include(o => o.SuperMarket);
-                //return View(await shoppingContext.ToListAsync());
+            return View(orders);
         }
 
         // GET: Orders/Details/5
