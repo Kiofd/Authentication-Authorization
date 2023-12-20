@@ -15,6 +15,7 @@ namespace TaskAuthenticationAuthorization.Models.ViewModels
         [Required]
         [Compare("Password", ErrorMessage ="Password don`t match")]
         [DataType(DataType.Password)]
+        [Display(Name = "Confirm Password")]
         public string PasswordConfirm { get; set; }
     }
 }
