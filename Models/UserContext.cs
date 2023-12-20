@@ -19,11 +19,13 @@ namespace TaskAuthenticationAuthorization.Models
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            string buyerRoleName = "byuer";
+        {            
+            Role buyerRole = new Role { Id = 2, Name = "byuer" };
+            Role adminRole = new Role { Id = 1, Name = "admin" };
+            User admin = new User() { Id = 1, Role = adminRole, RoleId = adminRole.Id, Password = "pass123" };
 
-            Role buyerRole = new Role { Id = 2, Name = buyerRoleName };
-
+            modelBuilder.Entity<Role>().HasData(buyerRole, adminRole);
+            modelBuilder.Entity<User>().HasData(admin);
             base.OnModelCreating(modelBuilder);
         }
     }

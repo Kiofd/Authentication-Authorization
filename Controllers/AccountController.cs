@@ -12,10 +12,10 @@ namespace TaskAuthenticationAuthorization.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly UserContext _userContext;
+        private readonly UserContext _userDbContext;
         public AccountController(UserContext context)
         {
-            _userContext = context;
+            _userDbContext = context;
         }
 
         [HttpGet]
@@ -30,18 +30,18 @@ namespace TaskAuthenticationAuthorization.Controllers
         {
             if (ModelState.IsValid)
             {
-                User user = await _userContext.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+                User user = await _userDbContext.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
 
                 if (user == null)
                 {
                     user = new User { Email = model.Email, Password = model.Password };
-                    Role userRole = await _userContext.Roles.FirstOrDefaultAsync(r => r.Name == "regular");
+                    Role userRole = await _userDbContext.Roles.FirstOrDefaultAsync(r => r.Name == "regular");
                     if (userRole != null)
                     {
                         user.Role = userRole;
                     }
 
-                    _userContext.Add(user);
+                    _userDbContext.Add(user);
                     await Authenticate(user);
 
                     return RedirectToAction("Index", "Home");
