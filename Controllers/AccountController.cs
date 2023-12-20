@@ -1,3 +1,4 @@
+
 ﻿using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
@@ -8,11 +9,15 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using TaskAuthenticationAuthorization.Models;
+using TaskAuthenticationAuthorization.Models;
+using TaskAuthenticationAuthorization.Models.ViewModels;
+
 
 namespace TaskAuthenticationAuthorization.Controllers
 {
     public class AccountController : Controller
     {
+
         private readonly UserContext db;
         private readonly ShoppingContext context;
         public AccountController(UserContext db, ShoppingContext context)
@@ -27,12 +32,13 @@ namespace TaskAuthenticationAuthorization.Controllers
             return View();
         }
 
+
         [HttpGet]
         public IActionResult Register()
         {
             return View();
         }
-
+        
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
@@ -44,7 +50,7 @@ namespace TaskAuthenticationAuthorization.Controllers
 
                 if (user != null)
                 {
-                    Role userRole = await db.Role.FirstOrDefaultAsync(r => r.Id == user.RoleId);
+                    Role userRole = await db.Roles.FirstOrDefaultAsync(r => r.Id == user.RoleId);
                     user.Role = userRole;
 
                     Customer customer = await context.Customers.FirstOrDefaultAsync(c => c.Email.Equals(user.Email));
@@ -76,7 +82,7 @@ namespace TaskAuthenticationAuthorization.Controllers
                 if (user == null)
                 {
                     user = new User { Email = model.Email, Password = model.Password, BuyerType = Models.User.buyerType.regular };
-                    Role userRole = await db.Role.FirstOrDefaultAsync(r => r.Name == "buyer");
+                    Role userRole = await db.Roles.FirstOrDefaultAsync(r => r.Name == "buyer");
 
                     if (userRole != null)
                     {
@@ -135,6 +141,5 @@ namespace TaskAuthenticationAuthorization.Controllers
             Customer customer = context.Customers.FirstOrDefault(c => c.Email == User.Identity.Name);
             return View(customer);
         }
-
     }
 }

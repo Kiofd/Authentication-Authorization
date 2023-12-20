@@ -27,17 +27,18 @@ namespace TaskAuthenticationAuthorization
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddDbContext<ShoppingContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDbContext<UserContext>(options => options.UseSqlServer(Configuration.GetConnectionString("UserDbConnection")));
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(options =>
-            {
-                options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
-            });
-
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("OnlyVIP", policy => policy.RequireClaim("BuyerType", "golden", "wholesale"));
             });
+
+            services.AddDbContext<ShoppingContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<UserContext>(options => options.UseSqlServer(Configuration.GetConnectionString("UserDbConnection")));
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(option =>
+                {
+                    option.LogoutPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
+                });
 
             services.AddControllersWithViews();
         }

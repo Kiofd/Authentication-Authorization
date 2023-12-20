@@ -10,6 +10,7 @@ using TaskAuthenticationAuthorization.Models;
 
 namespace TaskAuthenticationAuthorization.Controllers
 {
+    [AllowAnonymous]
     public class ProductsController : Controller
     {
         private readonly ShoppingContext _context;
@@ -56,6 +57,7 @@ namespace TaskAuthenticationAuthorization.Controllers
         [HttpPost]
         [Authorize(Roles = "admin")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([Bind("ID,Name,Price")] Product product)
         {
             if (ModelState.IsValid)
@@ -90,6 +92,7 @@ namespace TaskAuthenticationAuthorization.Controllers
         [HttpPost]
         [Authorize(Roles = "admin")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Price")] Product product)
         {
             if (id != product.ID)
@@ -143,6 +146,7 @@ namespace TaskAuthenticationAuthorization.Controllers
         [HttpPost, ActionName("Delete")]
         [Authorize(Roles = "admin")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var product = await _context.Products.FindAsync(id);

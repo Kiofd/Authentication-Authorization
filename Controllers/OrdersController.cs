@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,23 +10,53 @@ using TaskAuthenticationAuthorization.Models;
 
 namespace TaskAuthenticationAuthorization.Controllers
 {
+    [Authorize(Roles = "byuer")]
     public class OrdersController : Controller
     {
         private readonly ShoppingContext _context;
+        private readonly UserContext _userContext;
 
-        public OrdersController(ShoppingContext context)
+        public OrdersController(ShoppingContext context, UserContext userContext)
         {
             _context = context;
+            _userContext = userContext;
         }
 
         // GET: Orders
         public async Task<IActionResult> Index()
         {
+
             var shoppingContext = _context.Orders.Include(o => o.Customer).Include(o => o.SuperMarket);
             IEnumerable<Order> orders = new List<Order>();
             if (User.IsInRole("admin"))
                 orders = await shoppingContext.ToListAsync();
+            
+
+            var currentUser = await _userContext.Users
+                .Include(r => r.Role)
+                .FirstOrDefaultAsync(u => u.Email == User.Identity.Name);
+
+            if (currentUser != null)
+            {
+                if (currentUser.Role.Name == "buyer")
+                {
+                    var shoppingContext = _context.Orders
+                        .Include(o => o.Customer)
+                        .Include(o => o.SuperMarket)
+                        .Where(o => o.CustomerId == currentUser.Id);
+
+                    return View(await shoppingContext.ToListAsync());
+                }
+                else
+                {
+                    return Forbid();
+                }
+            }
+
             return View(orders);
+            //    var shoppingContext = _context.Orders.Include(o => o.Customer).Include(o => o.SuperMarket);
+            //return View(await shoppingContext.ToListAsync());
+
         }
 
         // GET: Orders/Details/5
