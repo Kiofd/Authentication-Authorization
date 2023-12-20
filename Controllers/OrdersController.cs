@@ -10,7 +10,7 @@ using TaskAuthenticationAuthorization.Models;
 
 namespace TaskAuthenticationAuthorization.Controllers
 {
-    [Authorize(Roles = "byuer")]
+    [Authorize(Roles = "buyer")]
     public class OrdersController : Controller
     {
         private readonly ShoppingContext _context;
@@ -28,7 +28,7 @@ namespace TaskAuthenticationAuthorization.Controllers
 
             var shoppingContext = _context.Orders.Include(o => o.Customer).Include(o => o.SuperMarket);
             IEnumerable<Order> orders = new List<Order>();
-            if (User.IsInRole("admin"))
+            if (User.IsInRole("buyer"))
                 orders = await shoppingContext.ToListAsync();
             
 
@@ -40,12 +40,12 @@ namespace TaskAuthenticationAuthorization.Controllers
             {
                 if (currentUser.Role.Name == "buyer")
                 {
-                    var shoppingContext = _context.Orders
+                    var _shoppingContext = _context.Orders
                         .Include(o => o.Customer)
                         .Include(o => o.SuperMarket)
                         .Where(o => o.CustomerId == currentUser.Id);
 
-                    return View(await shoppingContext.ToListAsync());
+                    return View(await _shoppingContext.ToListAsync());
                 }
                 else
                 {
@@ -54,8 +54,6 @@ namespace TaskAuthenticationAuthorization.Controllers
             }
 
             return View(orders);
-            //    var shoppingContext = _context.Orders.Include(o => o.Customer).Include(o => o.SuperMarket);
-            //return View(await shoppingContext.ToListAsync());
 
         }
 

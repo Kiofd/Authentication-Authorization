@@ -1,8 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
-namespace TaskAuthenticationAuthorization.Models
+namespace TaskAuthenticationAuthorization.Models.ViewModels
 {
-    public class RegisterViewModel : User
+    public class RegisterViewModels
     {
         [Required]
         public string Email { get; set; }
@@ -12,10 +13,8 @@ namespace TaskAuthenticationAuthorization.Models
         public string Password { get; set; }
 
         [Required]
-        [Compare("Password", ErrorMessage = "Passwords don't match")]
+        [Compare("Password", ErrorMessage ="Password don`t match")]
         [DataType(DataType.Password)]
-        [Display(Name = "Confirm Password")]
         public string PasswordConfirm { get; set; }
-
     }
 }

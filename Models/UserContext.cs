@@ -12,13 +12,12 @@ namespace TaskAuthenticationAuthorization.Models
     {
         public DbSet<User> Users { get; set; }
 
-        public DbSet<Role> Roles { get; set; }
+        public DbSet<Role> Role { get; set; }
 
 
         public UserContext(DbContextOptions<UserContext> options)
             : base(options)
         {
-
             Database.EnsureCreated();
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -9,7 +9,6 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using TaskAuthenticationAuthorization.Models;
-using TaskAuthenticationAuthorization.Models;
 using TaskAuthenticationAuthorization.Models.ViewModels;
 
 
@@ -41,7 +40,7 @@ namespace TaskAuthenticationAuthorization.Controllers
         
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginViewModel model)
+        public async Task<IActionResult> Login(LoginViewModels model)
         {
             if (ModelState.IsValid)
             {
@@ -50,14 +49,14 @@ namespace TaskAuthenticationAuthorization.Controllers
 
                 if (user != null)
                 {
-                    Role userRole = await db.Roles.FirstOrDefaultAsync(r => r.Id == user.RoleId);
+                    Role userRole = await db.Role.FirstOrDefaultAsync(r => r.Id == user.RoleId);
                     user.Role = userRole;
 
-                    Customer customer = await context.Customers.FirstOrDefaultAsync(c => c.Email.Equals(user.Email));
-                    if (customer == null)
-                    {
-                        context.Customers.Add(new Customer { Email = user.Email });
-                    }
+                    //Customer customer = await context.Customers.FirstOrDefaultAsync(c => c.Email.Equals(user.Email));
+                    //if (customer == null)
+                    //{
+                    //    context.Customers.Add(new Customer { Email = user.Email });
+                    //}
 
                     await Authentication(user);
 
@@ -72,7 +71,7 @@ namespace TaskAuthenticationAuthorization.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterViewModel model)
+        public async Task<IActionResult> Register(RegisterViewModels model)
         {
             if (ModelState.IsValid)
             {
@@ -82,7 +81,7 @@ namespace TaskAuthenticationAuthorization.Controllers
                 if (user == null)
                 {
                     user = new User { Email = model.Email, Password = model.Password, BuyerType = Models.User.buyerType.regular };
-                    Role userRole = await db.Roles.FirstOrDefaultAsync(r => r.Name == "buyer");
+                    Role userRole = await db.Role.FirstOrDefaultAsync(r => r.Name == "buyer");
 
                     if (userRole != null)
                     {
@@ -90,11 +89,11 @@ namespace TaskAuthenticationAuthorization.Controllers
                         user.RoleId = userRole.Id;
                     }
 
-                    Customer customer = await context.Customers.FirstOrDefaultAsync(c => c.Email.Equals(user.Email));
-                    if (customer == null)
-                    {
-                        context.Customers.Add(new Customer {FirstName="First", Email = user.Email });
-                    }
+                    //Customer customer = await context.Customers.FirstOrDefaultAsync(c => c.Email.Equals(user.Email));
+                    //if (customer == null)
+                    //{
+                    //    context.Customers.Add(new Customer {FirstName="First", Email = user.Email });
+                    //}
                     db.Users.Add(user);
 
                     await db.SaveChangesAsync();

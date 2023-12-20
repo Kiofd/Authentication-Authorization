@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace TaskAuthenticationAuthorization.Models.ViewModels
 {
-    public class RegisterViewModel
+    public class LoginViewModels
     {
         [Required]
         public string Email { get; set; }
@@ -11,10 +11,5 @@ namespace TaskAuthenticationAuthorization.Models.ViewModels
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
-
-        [Required]
-        [Compare("Password", ErrorMessage ="Password don`t match")]
-        [DataType(DataType.Password)]
-        public string PasswordConfirm { get; set; }
     }
 }
