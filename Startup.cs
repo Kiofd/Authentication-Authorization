@@ -26,6 +26,12 @@ namespace TaskAuthenticationAuthorization
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("OnlyVIP", policy => policy.RequireClaim("BuyerType", "golden", "wholesale"));
+            });
+
             services.AddDbContext<ShoppingContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddDbContext<UserContext>(options => options.UseSqlServer(Configuration.GetConnectionString("UserDbConnection")));
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -33,6 +39,7 @@ namespace TaskAuthenticationAuthorization
                 {
                     option.LogoutPath = new Microsoft.AspNetCore.Http.PathString("/Account/Login");
                 });
+
             services.AddControllersWithViews();
         }
 
@@ -55,6 +62,7 @@ namespace TaskAuthenticationAuthorization
             app.UseRouting();
 
             app.UseAuthentication();
+
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

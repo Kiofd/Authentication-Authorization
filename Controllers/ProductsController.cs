@@ -55,6 +55,7 @@ namespace TaskAuthenticationAuthorization.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "admin")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([Bind("ID,Name,Price")] Product product)
@@ -89,6 +90,7 @@ namespace TaskAuthenticationAuthorization.Controllers
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "admin")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Name,Price")] Product product)
@@ -142,6 +144,7 @@ namespace TaskAuthenticationAuthorization.Controllers
 
         // POST: Products/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize(Roles = "admin")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
