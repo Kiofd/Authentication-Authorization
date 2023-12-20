@@ -18,6 +18,32 @@ namespace TaskAuthenticationAuthorization.Controllers
             _userDbContext = context;
         }
 
+        [HttpGet]        
+        public IActionResult Login()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                User user = await _userDbContext.Users.FirstOrDefaultAsync(u => u.Email == model.Email && u.Password == model.Password);
+                if (user != null)
+                {
+                    user.Role = await _userDbContext.Roles.FirstOrDefaultAsync(r => r.Id == user.RoleId);
+                    await Authenticate(user); // authentication
+
+                    return RedirectToAction("Index", "Home");
+                }
+                ModelState.AddModelError("", "Incorrect login and(or) password");
+            }
+            return View(model);
+        }
+
+
         [HttpGet]
         public IActionResult Register()
         {
@@ -31,25 +57,22 @@ namespace TaskAuthenticationAuthorization.Controllers
             if (ModelState.IsValid)
             {
                 User user = await _userDbContext.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
-
                 if (user == null)
-                {
-                    user = new User { Email = model.Email, Password = model.Password };
-                    Role userRole = await _userDbContext.Roles.FirstOrDefaultAsync(r => r.Name == "regular");
+                {                  
+                    Role userRole = await _userDbContext.Roles.FirstOrDefaultAsync(r => r.Name == "buyer");
                     if (userRole != null)
-                    {
                         user.Role = userRole;
-                    }
 
-                    _userDbContext.Add(user);
-                    await Authenticate(user);
+                    // adding user to DB
+                    _userDbContext.Users.Add(user);
+                    await _userDbContext.SaveChangesAsync();
+
+                    await Authenticate(user); // authentication
 
                     return RedirectToAction("Index", "Home");
                 }
                 else
-                {
                     ModelState.AddModelError("", "Incorrect login and(or) password");
-                }
             }
             return View(model);
         }
@@ -70,6 +93,17 @@ namespace TaskAuthenticationAuthorization.Controllers
 
             //setting authenticational cookies
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(Id));
+        }
+        
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("Login", "Account");
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

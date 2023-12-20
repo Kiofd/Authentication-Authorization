@@ -10,7 +10,6 @@ using TaskAuthenticationAuthorization.Models;
 
 namespace TaskAuthenticationAuthorization.Controllers
 {
-    [AllowAnonymous]
     public class SuperMarketsController : Controller
     {
         private readonly ShoppingContext _context;
@@ -27,6 +26,7 @@ namespace TaskAuthenticationAuthorization.Controllers
         }
 
         // GET: SuperMarkets/Details/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -44,7 +44,8 @@ namespace TaskAuthenticationAuthorization.Controllers
             return View(superMarket);
         }
 
-        // GET: SuperMarkets/Create        
+        // GET: SuperMarkets/Create
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             return View();

@@ -12,21 +12,26 @@ namespace TaskAuthenticationAuthorization.Models
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
 
-        public UserContext(DbContextOptions<ShoppingContext> options)
+        public UserContext(DbContextOptions<UserContext> options)
             : base(options)
         {
+            Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {            
-            Role buyerRole = new Role { Id = 2, Name = "byuer" };
-            Role adminRole = new Role { Id = 1, Name = "admin" };
-            User admin = new User() { Id = 1, Role = adminRole, RoleId = adminRole.Id, Password = "pass123" };
+        {
+            string adminEmail = "admin@gmail.com";
+            string adminPassword = "123";
 
-            modelBuilder.Entity<Role>().HasData(buyerRole, adminRole);
-            modelBuilder.Entity<User>().HasData(admin);
-            base.OnModelCreating(modelBuilder);
+            Role adminRole = new Role { Id = 1, Name = "admin" };
+            Role userRole = new Role { Id = 2, Name = "buyer" };
+            User adminUser = new User { Id=1, Email = adminEmail, Password = adminPassword, RoleId = adminRole.Id };
+            User userUser = new User { Id = 2, Email = "user@gmail.com", Password = adminPassword, RoleId = userRole.Id };
+
+            modelBuilder.Entity<Role>().HasData(new Role[] { adminRole, userRole });
+            modelBuilder.Entity<User>().HasData(new User[] { adminUser, userUser });
+            base.OnModelCreating(modelBuilder);        
         }
     }
 }
