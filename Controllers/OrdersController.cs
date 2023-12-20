@@ -22,7 +22,10 @@ namespace TaskAuthenticationAuthorization.Controllers
         public async Task<IActionResult> Index()
         {
             var shoppingContext = _context.Orders.Include(o => o.Customer).Include(o => o.SuperMarket);
-            return View(await shoppingContext.ToListAsync());
+            IEnumerable<Order> orders = new List<Order>();
+            if (User.IsInRole("admin"))
+                orders = await shoppingContext.ToListAsync();
+            return View(orders);
         }
 
         // GET: Orders/Details/5
