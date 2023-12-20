@@ -1,6 +1,6 @@
 using System;
 
-namespace TaskAuthenticationAuthorization.Models
+namespace TaskAuthenticationAuthorization.Models.ViewModels
 {
     public class ErrorViewModel
     {
