@@ -10,7 +10,7 @@ using TaskAuthenticationAuthorization.Models;
 
 namespace TaskAuthenticationAuthorization.Controllers
 {
-    [Authorize(Roles = "buyer")]
+    [AllowAnonymous]
     public class OrdersController : Controller
     {
         private readonly ShoppingContext _context;
@@ -26,36 +26,45 @@ namespace TaskAuthenticationAuthorization.Controllers
         public async Task<IActionResult> Index()
         {
 
-            //var shoppingContext = _context.Orders.Include(o => o.Customer).Include(o => o.SuperMarket);
-            //IEnumerable<Order> orders = new List<Order>();
+            var shoppingContext = _context.Orders.Include(o => o.Customer).Include(o => o.SuperMarket);
+            IEnumerable<Order> orders = new List<Order>();
             //if (User.IsInRole("buyer"))
             //    orders = await shoppingContext.ToListAsync();
 
+            if (User.IsInRole("admin"))
+            {
+                return View(await shoppingContext.ToListAsync());
+            }
 
-            //var currentUser = await _userContext.Users
-            //    .Include(r => r.Role)
-            //    .FirstOrDefaultAsync(u => u.Email == User.Identity.Name);
+            else if (User.IsInRole("buyer"))
+            {
 
-            //if (currentUser != null)
-            //{
-            //    if (currentUser.Role.Name == "buyer")
-            //    {
-            //        var _shoppingContext = _context.Orders
-            //            .Include(o => o.Customer)
-            //            .Include(o => o.SuperMarket)
-            //            .Where(o => o.CustomerId == currentUser.Id);
 
-            //        return View(await _shoppingContext.ToListAsync());
-            //    }
-            //    else
-            //    {
-            //        return Forbid();
-            //    }
-            //}
+                var currentUser = await _userContext.Users
+                    .Include(r => r.Role)
+                    .FirstOrDefaultAsync(u => u.Email == User.Identity.Name);
 
-            //return View(orders);
-            var shoppingContext = _context.Orders.Include(o => o.Customer).Include(o => o.SuperMarket);
-            return View(await shoppingContext.ToListAsync());
+                if (currentUser != null)
+                {
+                    if (currentUser.Role.Name == "buyer")
+                    {
+                        var _shoppingContext = _context.Orders
+                            .Include(o => o.Customer)
+                            .Include(o => o.SuperMarket)
+                            .Where(o => o.CustomerId == currentUser.Id);
+
+                        return View(await _shoppingContext.ToListAsync());
+                    }
+                    else
+                    {
+                        return Forbid();
+                    }
+                }
+
+            }
+                return View(orders);
+                //var shoppingContext = _context.Orders.Include(o => o.Customer).Include(o => o.SuperMarket);
+                //return View(await shoppingContext.ToListAsync());
         }
 
         // GET: Orders/Details/5

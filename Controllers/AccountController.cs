@@ -137,7 +137,7 @@ namespace TaskAuthenticationAuthorization.Controllers
         [Authorize(Policy = "OnlyVIP")]
         public IActionResult MyDiscount()
         {
-            Customer customer = context.Customers.FirstOrDefault(c => c.Email == User.Identity.Name);
+            Customer customer = context.Customers.FirstOrDefault(c => c.FirstName == User.Identity.Name);
             return View(customer);
         }
     }
