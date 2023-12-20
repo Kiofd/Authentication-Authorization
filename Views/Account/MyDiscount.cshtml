@@ -1,0 +1,29 @@
+﻿@model TaskAuthenticationAuthorization.Models.Customer
+
+@{
+    ViewData["Title"] = "MyDiscount";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>MyDiscount</h4>
+    <hr />
+    <dl class="row">
+@*         <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt> *@
+@*         <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Email)
+        </dd> *@
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Discount)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Discount)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Index" asp-controller="Home">Back to List</a>
+</div>
