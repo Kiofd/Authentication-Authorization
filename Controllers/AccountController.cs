@@ -13,11 +13,12 @@ namespace TaskAuthenticationAuthorization.Controllers
 {
     public class AccountController : Controller
     {
-        private readonly ShoppingContext db;
-
-        public AccountController(ShoppingContext db)
+        private readonly UserContext db;
+        private readonly ShoppingContext context;
+        public AccountController(UserContext db, ShoppingContext context)
         {
             this.db = db;
+            this.context = context;
         }
 
         [HttpGet]
@@ -46,10 +47,10 @@ namespace TaskAuthenticationAuthorization.Controllers
                     Role userRole = await db.Role.FirstOrDefaultAsync(r => r.Id == user.RoleId);
                     user.Role = userRole;
 
-                    Customer customer = await db.Customers.FirstOrDefaultAsync(c => c.Email.Equals(user.Email));
+                    Customer customer = await context.Customers.FirstOrDefaultAsync(c => c.Email.Equals(user.Email));
                     if (customer == null)
                     {
-                        db.Customers.Add(new Customer { Email = user.Email });
+                        context.Customers.Add(new Customer { Email = user.Email });
                     }
 
                     await Authentication(user);
@@ -83,12 +84,11 @@ namespace TaskAuthenticationAuthorization.Controllers
                         user.RoleId = userRole.Id;
                     }
 
-                    Customer customer = await db.Customers.FirstOrDefaultAsync(c => c.Email.Equals(user.Email));
+                    Customer customer = await context.Customers.FirstOrDefaultAsync(c => c.Email.Equals(user.Email));
                     if (customer == null)
                     {
-                        db.Customers.Add(new Customer { Email = user.Email });
+                        context.Customers.Add(new Customer {FirstName="First", Email = user.Email });
                     }
-
                     db.Users.Add(user);
 
                     await db.SaveChangesAsync();
@@ -132,7 +132,7 @@ namespace TaskAuthenticationAuthorization.Controllers
         [Authorize(Policy = "OnlyVIP")]
         public IActionResult MyDiscount()
         {
-            Customer customer = db.Customers.FirstOrDefault(c => c.Email == User.Identity.Name);
+            Customer customer = context.Customers.FirstOrDefault(c => c.Email == User.Identity.Name);
             return View(customer);
         }
 

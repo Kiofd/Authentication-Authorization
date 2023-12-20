@@ -11,9 +11,9 @@ namespace TaskAuthenticationAuthorization.Controllers
     [Authorize(Roles = "admin")]
     public class UsersController : Controller
     {
-        private readonly ShoppingContext _context;
+        private readonly UserContext _context;
 
-        public UsersController(ShoppingContext context)
+        public UsersController(UserContext context)
         {
             _context = context;
         }
