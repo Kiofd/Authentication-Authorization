@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TaskAuthenticationAuthorization.Models.ViewModels
+namespace TaskAuthenticationAuthorization
 {
     public class PageViewModel
     {
@@ -20,7 +20,7 @@ namespace TaskAuthenticationAuthorization.Models.ViewModels
         {
             get
             {
-                return PageNumber > 1;
+                return (PageNumber > 1);
             }
         }
 
@@ -28,7 +28,7 @@ namespace TaskAuthenticationAuthorization.Models.ViewModels
         {
             get
             {
-                return PageNumber < TotalPages;
+                return (PageNumber < TotalPages);
             }
         }
     }
